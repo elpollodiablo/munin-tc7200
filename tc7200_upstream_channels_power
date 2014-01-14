@@ -1,0 +1,24 @@
+#!/bin/sh
+# -*- sh -*-
+
+. `dirname $0`/tc7200_common
+router_login
+
+if [ "$1" = "autoconf" ]; then
+        echo yes
+        exit 0
+fi
+
+if [ "$1" = "config" ]; then
+        echo 'graph_title Upstream channel ids power levels'
+        echo 'graph_args --base 1000 -l 0'
+        echo 'graph_vlabel dBmV'
+        echo 'graph_category upc'
+        echo 'graph_info The power of the cable modem channel ids.'
+	wget -q -O - http://$routerip/status/connection-upstream.asp|grep QAM |sed -e 's/<td>//g' -e 's,</tr>,,' | awk -F '</td>' '{print "channelid" $2 ".label channel id " $2 "\nchannelid" $2 ".draw LINE2\nchannelid" $2 ".info Signal strength for upstream channel id " $2 " in dBmV" }'
+        exit 0
+fi
+
+wget -q -O - http://$routerip/status/connection-upstream.asp|grep QAM |sed -e 's/<td>//g' -e 's,</tr>,,' | awk -F '</td>' '{print "channelid" $2 ".value " $8}'
+
+router_logout

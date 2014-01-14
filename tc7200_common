@@ -1,0 +1,6 @@
+router_login () { 
+	wget --post-data="loginUsername=$routeruser&loginPassword=$routerpassword" http://$routerip/goform/login -O - > /dev/null 2>&1
+}
+router_logout() {
+	wget http://$routerip/logout.asp -O - > /dev/null 2>&1
+}
